@@ -15,10 +15,9 @@ def get_highlights():
         "source_url": h.source_url,
         "page_title": h.page_title,
         "created_at": h.created_at.isoformat(),
-        "user_id": h.user_id,
         "user": {
             "id": h.user.id,
-            "username": h.user.username
+            "username": h.user.name
         }
     } for h in highlights]
     return jsonify(result)
