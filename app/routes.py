@@ -16,3 +16,4 @@ def index():
         'message': 'Welcome to the Highlight API',
         'test_endpoint': '/api/test'
     })
+
