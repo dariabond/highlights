@@ -6,6 +6,25 @@ services:
     environment:
       - FLASK_ENV=development
       - FLASK_DEBUG=1
+      - FLASK_APP=app.py
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/flask_db
+    depends_on:
+      - db
     volumes:
       - .:/app
+    command: flask run --host=0.0.0.0
     restart: always
+
+  db:
+    image: postgres:14
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=flask_db
+    ports:
+      - "5432:5432"
+
+volumes:
+  postgres_data:
