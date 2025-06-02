@@ -2,6 +2,7 @@ from flask import Flask
 from flask_migrate import Migrate
 from .config import Config
 from .models import db, User, Highlight
+from app.routes.users import users_bp
 
 def create_app():
     app = Flask(__name__)
@@ -10,7 +11,6 @@ def create_app():
     db.init_app(app)
     migrate = Migrate(app, db)
 
-    from .routes import main
-    app.register_blueprint(main)
+    app.register_blueprint(users_bp)
     
     return app
