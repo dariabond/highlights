@@ -1,4 +1,5 @@
 from flask import Blueprint, jsonify
+from .models import db, User
 
 main = Blueprint('main', __name__)
 
@@ -17,3 +18,8 @@ def index():
         'test_endpoint': '/api/test'
     })
 
+@main.route('/users', methods=['GET'])
+def get_users():
+    users = User.query.all()
+    result = [{"id": user.id, "name": user.name, "email": user.email} for user in users]
+    return jsonify(result)
