@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from app.models import db, Highlight
+from app.models import db, Highlight, User
 
 highlights_bp = Blueprint('highlights', __name__, url_prefix='/highlights')
 
@@ -17,7 +17,43 @@ def get_highlights():
         "created_at": h.created_at.isoformat(),
         "user": {
             "id": h.user.id,
-            "username": h.user.name
+            "name": h.user.name
         }
     } for h in highlights]
     return jsonify(result)
+
+@highlights_bp.route('', methods=['POST'])
+def create_highlights():
+    data = request.json
+
+    if 'user_id' not in data:
+        return jsonify({"error": "user_id is required"}), 400
+
+    user = User.query.get(data['user_id'])
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    if 'text' not in data or not data['text'].strip():
+        return jsonify({"error": "text is required"}), 400
+
+    highlight = Highlight(
+        text=data['text'],
+        source_url=data.get('source_url'),
+        page_title=data.get('page_title'),
+        user_id=data['user_id']
+    )
+
+    db.session.add(highlight)
+    db.session.commit()
+    return jsonify({
+        "id": highlight.id,
+        "text": highlight.text,
+        "source_url": highlight.source_url,
+        "page_title": highlight.page_title,
+        "created_at": highlight.created_at.isoformat(),
+        "user_id": highlight.user_id,
+        "user": {
+            "id": highlight.user.id,
+            "name": highlight.user.name
+        }
+    }), 201
