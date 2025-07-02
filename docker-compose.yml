@@ -7,7 +7,9 @@ services:
       - FLASK_ENV=development
       - FLASK_DEBUG=1
       - FLASK_APP=app.py
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/flask_db
+      - DATABASE_URL=${SQLALCHEMY_DATABASE_URI}
+    env_file:
+      - .env
     depends_on:
       - db
     volumes:
